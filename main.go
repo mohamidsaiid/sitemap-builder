@@ -28,7 +28,7 @@ type Url struct {
 }
 
 func main() {
-	urlFlag := flag.String("url", "http://localhost:3000/", "specify which website you want to get its site map")
+	urlFlag := flag.String("url", "https://basiclook.com", "specify which website you want to get its site map")
 	flag.Parse()
 
 	q := queue.Queue{
@@ -103,6 +103,8 @@ func filter(baseLnk *url.URL, links []link.Link) []string {
 	for _, val := range l {
 		if strings.HasPrefix(val, baseLnk.String()) && baseLnk.String() != val {
 			res = append(res, val)
+		} else if strings.HasPrefix(val, "//") {
+			res = append(res, baseLnk.Scheme+":"+val)
 		} else if strings.HasPrefix(val, "/") && baseLnk.String() != val {
 			val = baseLnk.String() + val
 			res = append(res, val)
@@ -110,6 +112,7 @@ func filter(baseLnk *url.URL, links []link.Link) []string {
 	}
 	return res
 }
+
 /*func filter(baseLnk *url.URL, links []link.Link) []string {
 	res := []string{}
 	seen := map[string]struct{}{}
